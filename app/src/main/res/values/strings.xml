@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">GeoQuiz</string>
+    <string name="action_settings">Settings</string>
+    <!--   Made redundant: <string name="question_text">Toronto is the largest city in Canada.</string>   -->
+
+    <string name="question_oceans">
+        The Pacific Ocean is larger than the Atlantic Ocean.
+    </string>
+
+    <string name="question_mideast">
+        The Suez Canal connects the Red Sea and the Indian Ocean.
+    </string>
+
+    <string name="question_africa">
+        The source of the Nile River is in Egypt.
+    </string>
+
+    <string name="question_americas">
+        The Amazon River is the longest river in the Americas.
+    </string>
+
+    <string name="question_asia">
+        Lake Baikal is the world\'s oldest and deepest freshwater lake.
+    </string>
+
+    <string name="true_button">Sure</string>
+    <string name="false_button">Nah</string>
+    <string name="correct_toast">You got it.</string>
+    <string name="incorrect_toast">That\'s... no.</string>
+    <string name="next_button">Next</string>
+</resources>
