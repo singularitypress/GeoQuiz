@@ -27,5 +27,6 @@
     <string name="false_button">Nah</string>
     <string name="correct_toast">You got it.</string>
     <string name="incorrect_toast">That\'s... no.</string>
-    <string name="next_button">Next</string>
+    <string name="next_button">NEXT</string>
+    <string name="previous_button">PREV</string>
 </resources>

@@ -1,14 +1,18 @@
 package co.jaypandya.geoquiz;
 
+import android.media.Image;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 /*
@@ -32,8 +36,11 @@ public class QuizActivity extends AppCompatActivity {
     */
     private Button mTrueButton;
     private Button mFalseButton;
-    private Button mNextButton;
+    private ImageButton mNextButton;
+    private ImageButton mPrevButton;
     private TextView mQuestionTextView;
+
+    private static final String TAG = "QuizActivity ";
 
     // Question class has an int mTextResId and mAnswerTrue, so lets create an array of those to hold our questions and answers.
     private Question[] mQuestionBank = new Question[] {
@@ -46,24 +53,44 @@ public class QuizActivity extends AppCompatActivity {
     // Index of the above array should probably start at 0.
     private int mCurrentIndex = 0;
 
+    /*
+        Then we have an int that gets assigned the id of the mQuestionBank's question
+        id based on the array index.
+        Then we send the id for the Question object's question and send it to mQuestionTextView
+        so that it sets the text from that question to mQuestionTextView's textview.
+    */
+    private void updateQuestion() {
+        int question = mQuestionBank[mCurrentIndex].getTextResId();
+        mQuestionTextView.setText(question);
+    }
+
+    /**/
+    private void checkAnswer(boolean userPressedTrue) {
+        boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+        int messageResId = 0;
+        View parentLayout = findViewById(android.R.id.content);
+        if(userPressedTrue == answerIsTrue){
+            messageResId = R.string.correct_toast;
+        } else {
+            messageResId = R.string.incorrect_toast;
+        }
+
+        Snackbar.make(parentLayout, messageResId, Snackbar.LENGTH_LONG).show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Log.d(TAG, "onCreate called");
 
         /*
             Wiring up the TextView.
             Here we link the textview called question_text_view to mQuestionTextView.
-            Then we have an int that gets assigned the id of the mQuestionBank's question
-            id based on the array index.
-            Then we send the id for the Question object's question and send it to mQuestionTextView
-            so that it sets the text from that question to mQuestionTextView's textview.
         */
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
-        int question = mQuestionBank[mCurrentIndex].getTextResId();
-        mQuestionTextView.setText(question);
 
         /*
             Just below this comment block, I'm going to make the two private Buttons above
@@ -90,7 +117,7 @@ public class QuizActivity extends AppCompatActivity {
                 // and the length it needs to be on screen.
                 // Toasts use context instead of view, probably because they're not reliant
                 // on the view unlike Snackbars.
-                Snackbar.make(v, R.string.correct_toast, Snackbar.LENGTH_LONG).show();
+                checkAnswer(true);
             }
         });
 
@@ -98,9 +125,45 @@ public class QuizActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, R.string.incorrect_toast, Snackbar.LENGTH_LONG).show();
+                checkAnswer(false);
             }
         });
+
+        // Wiring up  the Next button
+        mNextButton = (ImageButton) findViewById(R.id.next_button);
+        mNextButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // When clicking the next button, the index increments by one, and changes the textview to the new Question's textview.
+                // Also, the % is there so that when you hit 5%5 which is 0, the index starts from the beginning, index 0.
+                mCurrentIndex = (mCurrentIndex+1) % mQuestionBank.length;
+                updateQuestion();
+            }
+        });
+
+        mPrevButton = (ImageButton) findViewById(R.id.previous_button);
+        mPrevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // only allow to go back if current index is greater than 0, otherwise it'd crash. Can't have a negative index.
+                if (mCurrentIndex > 0) {
+                    mCurrentIndex = (mCurrentIndex - 1) % mQuestionBank.length;
+                    updateQuestion();
+                }
+            }
+        });
+        mQuestionTextView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // When clicking the next button, the index increments by one, and changes the textview to the new Question's textview.
+                // Also, the % is there so that when you hit 5%5 which is 0, the index starts from the beginning, index 0.
+                mCurrentIndex = (mCurrentIndex+1) % mQuestionBank.length;
+                updateQuestion();
+            }
+        });
+
+        //Having the below here as well as within the nextbutton listener is so that a question appears when you first open the app
+        updateQuestion();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +173,18 @@ public class QuizActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        Log.d(TAG, "onStart() called");
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        Log.d(TAG, "onPause() called");
     }
 
     @Override
