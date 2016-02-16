@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     android:id="@+id/main_bg"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -12,18 +12,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="co.jaypandya.geoquiz.QuizActivity"
-    tools:showIn="@layout/activity_quiz"
-    android:gravity="center"
-    android:orientation="vertical">
+    tools:showIn="@layout/activity_quiz" >
 
     <TextView
         android:id="@+id/question_text_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
         android:orientation="horizontal">
 
         <Button
@@ -42,7 +42,8 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left">
 
         <ImageButton
             android:id="@+id/previous_button"
@@ -57,4 +58,4 @@
             android:src="@drawable/arrow_right"/>
 
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>
