@@ -29,4 +29,11 @@
     <string name="incorrect_toast">That\'s... no.</string>
     <string name="next_button">NEXT</string>
     <string name="previous_button">PREV</string>
+
+    <!-- Cheating activity related strings -->
+    <string name="warning_text">Are you sure you want to do this?</string>
+    <string name="show_answer_button">Show Answer</string>
+    <string name="cheat_button">Cheat!</string>
+    <string name="judgment_toast">Cheating is wrong.</string>
+    <string name="title_activity_cheat">CheatActivity</string>
 </resources>

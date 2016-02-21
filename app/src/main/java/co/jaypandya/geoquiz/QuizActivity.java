@@ -1,6 +1,8 @@
 package co.jaypandya.geoquiz;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -38,8 +40,11 @@ public class QuizActivity extends AppCompatActivity {
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
+    private Button mCheatButton;
 
     private static final String TAG = "QuizActivity ";
+    // Here, we're going to save the mCurrentIndex into a key/value pair with KEY_INDEX being the key.
+    private static final String KEY_INDEX = "index";
 
     // Question class has an int mTextResId and mAnswerTrue, so lets create an array of those to hold our questions and answers.
     private Question[] mQuestionBank = new Question[] {
@@ -77,6 +82,20 @@ public class QuizActivity extends AppCompatActivity {
         Snackbar.make(parentLayout, messageResId, Snackbar.LENGTH_LONG).show();
     }
 
+    /* Big Nerd Ranch
+    * The default implementation of onSaveInstanceState(...) directs all of the activity's views to
+    * save their state as data in the 'Bundle' object. A Bundle is a structure that maps String keys
+    * to values of certain limited types.
+    *
+    * See below with the onCreate. When overriding onCreate(...), you call onCreate(...) on the
+    * activity's superclass and pass in the bundle you just received. In the superclass implementation,
+    * the saved state of the views is retrieved and used to re-create the activity's view hierarchy.
+    *
+    * Since the user's data gets screwed when changing device config (like rotation), we can override
+    * onSaveInstanceState(Bundle) so that the value value of mCurrentIndex gets saved and reused when
+    * destroyed and created on a device rotation.
+    * */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +103,12 @@ public class QuizActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Log.d(TAG, "onCreate called");
+
+        // Check to see if the Bundle savedInstanceState contains a value. If so, assign it to mCurrentIndex.
+        // If it contains a value, that int ought to be the last mCurrentIndex used before onDestroy.
+        if(savedInstanceState != null){
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
 
         /*
             Wiring up the TextView.
@@ -151,6 +176,31 @@ public class QuizActivity extends AppCompatActivity {
                 }
             }
         });
+
+        /*
+        * Starting an activity.
+        *
+        * You obviously use the startActivity(...) function. The call is sent to the ActivityManager in
+        * the OS which then calls the onCreate() function for that activity you're trying to start.
+        *
+        * The ActivityManager needs to take advantage of Intents in order to understand which Activity it
+        * needs to start. The Intent parameter of startActivity(Intent).
+        *
+        * An intent is an object that a component like an Activity can use to talk to the OS. There are other
+        * examples in addition to Activities such as Services, Broadcast Receivers, and Content Providers.
+        * In the below case of the Cheat Button, we need to contextualize the startActivity. So we'd create
+        * a new Intent object- myIntent and pass in QuizActivity.this as the context in which we're transitioning
+        * from, and CheatActivity.class as the activity we're transitioning to.
+        * */
+        mCheatButton =(Button)findViewById(R.id.cheat_button);
+        mCheatButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(QuizActivity.this, CheatActivity.class);
+                startActivity(myIntent);
+            }
+        });
+
         mQuestionTextView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -172,6 +222,16 @@ public class QuizActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    // onCreate uses Bundle savedInstanceState as function parameters. Overriding it will allow me to add mCurrentIndex to the Bundle.
+    // Additionally, I'm taking the savedInstanceState bundle and giving it KEY_INDEX and the int of the current index.
+    // the onCreate method will take the KEY_INDEX value and assign it to mCurrentIndex if the savedInstanceState is NOT NULL.
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
     }
 
     @Override
