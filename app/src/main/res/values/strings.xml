@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GeoQuiz</string>
+    <string name="app_name">Jay\'s Geography Quiz</string>
     <string name="action_settings">Settings</string>
     <!--   Made redundant: <string name="question_text">Toronto is the largest city in Canada.</string>   -->
 
